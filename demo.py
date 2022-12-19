@@ -29,8 +29,6 @@ def main(input_path, output_path):
             input_image = cv2.resize(input_image,(infer_image.shape[1],infer_image.shape[0]),interpolation=cv2.INTER_LINEAR)
 
         output_image = [input_image,infer_image]
-        #print(input_image.shape)
-        #print(infer_image.shape)
         cv2.imshow("Image",np.hstack(output_image))
         cv2.imwrite(os.path.join(output_path,sub_output,infer),np.hstack(output_image))
 

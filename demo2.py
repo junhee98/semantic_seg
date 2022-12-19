@@ -86,13 +86,6 @@ def save_images(image, mask, output_path, image_file, palette):
     w, h = image.size
     image_file = os.path.basename(image_file).split('.')[0]
     colorized_mask = colorize_mask(mask, palette)
-    #colorized_mask.save(os.path.join(output_path, image_file+'.png'))
-    '''output_im = Image.new('RGB', (w*2, h))
-    output_im.paste(image, (0,0))
-    output_im.paste(colorized_mask, (w,0))
-    output_im.save(os.path.join(output_path, image_file+'_colorized.png'))
-    mask_img = Image.fromarray(mask, 'L')
-    mask_img.save(os.path.join(output_path, image_file+'.png'))'''
     return colorized_mask
 
 def main():
@@ -113,31 +106,11 @@ def main():
     palette = loader.dataset.palette
 
     # Model
-    #model = getattr(models, config['arch']['type'])(num_classes, **config['arch']['args'])
     availble_gpus = list(range(torch.cuda.device_count()))
     device = torch.device('cuda:0' if len(availble_gpus) > 0 else 'cpu')
 
     # Load checkpoint
     model = torch.load(args.model, map_location=device)
-    '''if isinstance(checkpoint, dict) and 'state_dict' in checkpoint.keys():
-        checkpoint = checkpoint['state_dict']
-    # If during training, we used data parallel
-    if 'module' in list(checkpoint.keys())[0] and not isinstance(model, torch.nn.DataParallel):
-        print('during training')
-        # for gpu inference, use data parallel
-        if "cuda" in device.type:
-            model = torch.nn.DataParallel(model)
-        else:
-        # for cpu inference, remove module
-            new_state_dict = OrderedDict()
-            for k, v in checkpoint.items():
-                name = k[7:]
-                new_state_dict[name] = v
-            checkpoint = new_state_dict
-    # load
-    model.load_state_dict(checkpoint)'''
-    #for param_tensor in model.state_dict(checkpoint):
-    #    print(param_tensor, "\t", model.state_dict()[param_tensor].size())
     model.to(device)
     model.eval()
 
@@ -160,10 +133,6 @@ def main():
             image.thumbnail((w, h))
             input = normalize(to_tensor(image)).unsqueeze(0)
             
-            '''if args.mode == 'multiscale':
-                prediction = multi_scale_predict(model, input, scales, num_classes, device)
-            elif args.mode == 'sliding':
-                prediction = sliding_predict(model, input, num_classes)'''
             prediction = model(input.to(device))
             prediction = prediction.squeeze(0).cpu().numpy()
             prediction = F.softmax(torch.from_numpy(prediction), dim=0).argmax(0).cpu().numpy()
@@ -184,8 +153,6 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='Inference')
     parser.add_argument('-c', '--config', default='VOC',type=str,
                         help='The config used to train the model')
-    '''parser.add_argument('-mo', '--mode', default='multiscale', type=str,
-                        help='Mode used for prediction: either [multiscale, sliding]')'''
     parser.add_argument('-m', '--model', default='model_weights.pth', type=str,
                         help='Path to the .pth model checkpoint to be used in the prediction')
     parser.add_argument('-i', '--images', default=None, type=str,
@@ -194,63 +161,8 @@ def parse_arguments():
                         help='Output Path')
     parser.add_argument('-e', '--extension', default='jpg', type=str,
                         help='The extension of the images to be segmented')
-    '''parser.add_argument('-ip', '--input_path', default=None,type=str,
-                        help='Path to the Image directory')
-    parser.add_argument('-op', '--output_path', default=None,type=str,
-                        help='Path to the Image directory')'''
     args = parser.parse_args()
     return args
 
 if __name__ == '__main__':
     main()
-
-'''def main(input_path, output_path):
-
-    sub_infer = 'infer'
-    sub_output = 'outputs'
-
-    input_list = sorted(os.listdir(input_path))
-    output_list = sorted(os.listdir(os.path.join(output_path,sub_infer)))
-
-    cv2.namedWindow('Image',cv2.WINDOW_NORMAL)    
-
-    if not os.path.exists(os.path.join(output_path,sub_output)):
-        os.makedirs(os.path.join(output_path,sub_output))
-
-
-    #Phase1 : input image & infer image concat / visualization 
-    print("Phase1")
-    for input in tqdm(input_list):
-        input_image = cv2.imread(os.path.join(input_path,input),cv2.IMREAD_COLOR)
-        infer_image = inference(input)
-        output_image = [input_image,infer_image]
-        cv2.imshow("Image",np.hstack(output_image))
-        #cv2.imwrite(os.path.join(output_path,sub_output,infer),np.hstack(output_image))
-
-        if cv2.waitKey(1) == 27:
-            break
-    
-    h, w, _ = input_image.shape
-
-    cv2.destroyAllWindows()
-
-
-    #Phase2 : concat image to Video
-    print("Phase2")
-    frame_size = (int(w*2),h)
-
-    output_list = sorted(os.listdir(os.path.join(output_path,sub_output)))
-
-    out = cv2.VideoWriter(os.path.join(output_path,'result.mp4'),cv2.VideoWriter_fourcc(*'DIVX'), 30, frame_size)
-
-    for list in tqdm(output_list):
-        output = cv2.imread(os.path.join(output_path,sub_output,list),cv2.IMREAD_COLOR)
-        out.write(output)
-
-    out.release()
-
-    #Phase3 : remove dummy directory
-    print("Phase3")
-    shutil.rmtree(os.path.join(os.path.join(output_path,sub_output)))
-    print("Done!")
-'''

@@ -13,9 +13,9 @@
 <!-- /TOC -->
 
 This repo contains a PyTorch an implementation of semantic segmentation models.
-We refer to the original code ([link](#https://github.com/yassouali/pytorch-segmentation)) which implement basic SegNet.
+We refer to the original code ([link](https://github.com/yassouali/pytorch-segmentation)) which implement basic SegNet.
 
-This repository is developed by [Taesoo Kim](#https://github.com/kimtaesu24), and [Junhee Lee](#https://github.com/junhee98).
+This repository is developed by [Taesoo Kim](https://github.com/kimtaesu24), and [Junhee Lee](https://github.com/junhee98).
 ***
 ## Requirements
 
