@@ -36,11 +36,11 @@ pip install -r requirements.txt
 - (**SegNet**) Basic SegNet 
   - A Deep ConvolutionalEncoder-Decoder Architecture for ImageSegmentation (2016): [[Paper]](https://arxiv.org/pdf/1511.00561)
 - (**SegNet_L_Res**) Basic SegNet + Local residual (intra VGGNet block)
-- (**SegNet_G_Res**) Basic SegNet + Local residual (intra VGGNet block) + Global residual (inter Encoder-Decoder)
-- (**SegNet_CReLU**) Basic SegNet + Local residual + Global residual + CReLU (replace ReLU of Conv1,3,5 in Encoder)
+- (**SegNet_G_Res**) SegNet_L_Res + Global residual (inter Encoder-Decoder)
+- (**SegNet_CReLU**) SegNet_G_Res + CReLU (replace ReLU of Conv1,3,5 in Encoder)
   - Understanding and Improving Convolutional Neural Networks via Concatenated Rectified Linear Units (2016): [[Paper]](https://arxiv.org/pdf/1603.05201v2)
 - (**SegNet_Light_CReLU**) Remove some part of SegNet_CReLU's encoder block
-- (**SegNet_LRR**) 
+- (**SegNet_LRR**) SegNet_CReLU + Global_LRR(replace Global residual to LRR Mask Module)
   - Laplacian Pyramid Reconstruction and Refinement for Semantic Segmentation (2016): [[Paper]](https://arxiv.org/pdf/1605.02264)
 ***
 ## Datasets
