@@ -58,8 +58,6 @@ pip install -r requirements.txt
 - we modify all classes to the following palette:
 <p align="center"><img src="https://user-images.githubusercontent.com/80094752/208243773-48deb9d5-5597-40fb-88b8-f8d553d0d7d7.png" align="center" width="550"></p>
 
-### Dataset preprocessing
-- we
 
 ***
 
